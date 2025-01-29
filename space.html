@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Solar System</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .solar-system {
+            position: relative;
+            width: 800px;
+            height: 800px;
+        }
+
+        .sun {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(#ffd700, #ff8c00);
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 50px #ff8c00;
+        }
+
+        .orbit {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            transform-origin: 50% 50%;
+        }
+
+        .info {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="solar-system">
+        <div class="sun"></div>
+        <div class="info" id="planet-info">Hover over a planet</div>
+    </div>
+
+    <script>
+        const planets = [
+            { name: 'Mercury', color: '#A0522D', size: 10, orbit: 100, speed: 4.7 },
+            { name: 'Venus', color: '#DEB887', size: 15, orbit: 140, speed: 3.5 },
+            { name: 'Earth', color: '#4169E1', size: 16, orbit: 180, speed: 3 },
+            { name: 'Mars', color: '#CD5C5C', size: 12, orbit: 220, speed: 2.4 },
+            { name: 'Jupiter', color: '#DAA520', size: 30, orbit: 300, speed: 1.3 },
+            { name: 'Saturn', color: '#F4A460', size: 25, orbit: 360, speed: 0.9 },
+            { name: 'Uranus', color: '#87CEEB', size: 20, orbit: 400, speed: 0.7 },
+            { name: 'Neptune', color: '#4682B4', size: 18, orbit: 440, speed: 0.5 }
+        ];
+
+        const solarSystem = document.querySelector('.solar-system');
+        const infoBox = document.getElementById('planet-info');
+
+        planets.forEach(planet => {
+            // Create orbit
+            const orbit = document.createElement('div');
+            orbit.className = 'orbit';
+            orbit.style.width = ${planet.orbit * 2}px;
+            orbit.style.height = ${planet.orbit * 2}px;
+            
+            // Create planet
+            const planetDiv = document.createElement('div');
+            planetDiv.className = 'planet';
+            planetDiv.style.width = ${planet.size}px;
+            planetDiv.style.height = ${planet.size}px;
+            planetDiv.style.backgroundColor = planet.color;
+            planetDiv.style.left = ${planet.orbit}px;
+            planetDiv.style.animation = orbit ${planet.speed}s linear infinite;
+            
+            // Add hover effects
+            planetDiv.addEventListener('mouseover', () => {
+                infoBox.style.display = 'block';
+                infoBox.innerHTML = `<strong>${planet.name}</strong><br>
+                                    Orbit Radius: ${planet.orbit} million km<br>
+                                    Diameter: ${planet.size * 1000} km`;
+            });
+
+            planetDiv.addEventListener('mouseout', () => {
+                infoBox.style.display = 'none';
+            });
+
+            orbit.appendChild(planetDiv);
+            solarSystem.appendChild(orbit);
+        });
+
+        // Add animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes orbit {
+                from { transform: rotate(0deg) translateX(${planets[0].orbit}px) rotate(0deg); }
+                to { transform: rotate(360deg) translateX(${planets[0].orbit}px) rotate(-360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
